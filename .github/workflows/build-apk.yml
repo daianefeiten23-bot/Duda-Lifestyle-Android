@@ -10,13 +10,18 @@ jobs:
     steps:
       - name: Baixar projeto
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Extrair projeto Android
         shell: bash
         run: |
-        
-          ZIP_FILE="./Duda_Lifestyle_ANDROID_CELULAR_APK_AGUA_FINAL_CORRIGIDA.zip"
+          ZIP_FILE="./Duda_Lifestyle_V5_AGUA_LEMBRETES_PRONTO_BUILD.zip"
+
+          if [ ! -f "$ZIP_FILE" ]; then
             echo "Arquivo ZIP nao encontrado."
+            echo "ZIPs encontrados no repositorio:"
+            find . -maxdepth 1 -type f -name "*.zip" -print
             exit 1
           fi
 
@@ -25,12 +30,14 @@ jobs:
           unzip -q "$ZIP_FILE" -d extracted
 
           PROJECT_DIR=$(find extracted -type f -name "settings.gradle.kts" -printf '%h\n' | head -1)
+
           if [ -z "$PROJECT_DIR" ]; then
             echo "Projeto Android nao encontrado dentro do ZIP."
             exit 1
           fi
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "Projeto encontrado em: $PROJECT_DIR"
 
       - name: Configurar Java 17
         uses: actions/setup-java@v4
@@ -53,4 +60,3 @@ jobs:
           name: Duda-Lifestyle-APK
           path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
-# atualizar build
