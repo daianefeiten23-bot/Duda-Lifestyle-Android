@@ -14,8 +14,8 @@ jobs:
       - name: Extrair projeto Android
         shell: bash
         run: |
-          ZIP_FILE="./Duda_Lifestyle_ANDROID_CELULAR_APK_AGUA_CORRIGIDA.zip"
-          if [ ! -f "$ZIP_FILE" ]; then
+        
+          ZIP_FILE="./Duda_Lifestyle_ANDROID_CELULAR_APK_AGUA_FINAL_CORRIGIDA.zip"
             echo "Arquivo ZIP nao encontrado."
             exit 1
           fi
