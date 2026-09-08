@@ -42,7 +42,7 @@ jobs:
       - name: Gerar APK
         shell: bash
         run: gradle -p "$PROJECT_DIR" :app:assembleDebug --
-              - name: Disponibilizar APK para download
+      - name: Disponibilizar APK para download
         uses: actions/upload-artifact@v4
         with:
           name: Duda-Lifestyle-APK
