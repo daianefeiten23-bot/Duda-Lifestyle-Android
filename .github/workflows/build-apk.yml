@@ -14,18 +14,22 @@ jobs:
       - name: Extrair projeto Android
         shell: bash
         run: |
-    
-            ZIP_FILE="./Duda_Lifestyle_ANDROID_CELULAR_APK_AGUA_CORRIGIDA.zip"
-            echo "Nenhum arquivo ZIP encontrado."
+          ZIP_FILE="./Duda_Lifestyle_ANDROID_CELULAR_APK_AGUA_CORRIGIDA.zip"
+          if [ ! -f "$ZIP_FILE" ]; then
+            echo "Arquivo ZIP nao encontrado."
             exit 1
-          
+          fi
+
+          rm -rf extracted
           mkdir -p extracted
           unzip -q "$ZIP_FILE" -d extracted
-          PROJECT_DIR=$(find extracted -type f -name "settings.gradle.kts" -printf '%h\n' | head -n 1)
+
+          PROJECT_DIR=$(find extracted -type f -name "settings.gradle.kts" -printf '%h\n' | head -1)
           if [ -z "$PROJECT_DIR" ]; then
             echo "Projeto Android nao encontrado dentro do ZIP."
             exit 1
           fi
+
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
       - name: Configurar Java 17
@@ -35,15 +39,17 @@ jobs:
           java-version: '17'
 
       - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '9.5.0'
 
       - name: Gerar APK
         shell: bash
-        run: gradle -p "$PROJECT_DIR" :app:assembleDebug --
+        run: gradle -p "$PROJECT_DIR" :app:assembleDebug --no-daemon
+
       - name: Disponibilizar APK para download
         uses: actions/upload-artifact@v4
         with:
           name: Duda-Lifestyle-APK
           path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
