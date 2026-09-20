@@ -1,0 +1,6 @@
+<resources>
+ <style name="Theme.DudaLifestyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+  <item name="android:statusBarColor">#A54569</item>
+  <item name="android:navigationBarColor">#FFFFFF</item>
+ </style>
+</resources>
